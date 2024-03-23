@@ -1,3 +1,40 @@
+const express = require('express');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
+const cors = require('cors');
+
+const upload = multer({ dest: 'uploads/' });
+const app = express();
+
+app.use(cors());
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+app.post('/upload', upload.single('image'), (req, res) => {
+  console.log(req.file);
+  res.json({ message: 'Image uploaded successfully' });
+});
+
+app.get('/pictures', (req, res) => {
+  fs.readdir('uploads', (err, files) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
+    } else {
+      res.json(files);
+    }
+  });
+});
+
+
+
+app.listen(3000, () => console.log('Server started on port 3000'));
+
+
+
+/*
+
 // ***************************************************************************
 // Bank API code from Web Dev For Beginners project
 // https://github.com/microsoft/Web-Dev-For-Beginners/tree/main/7-bank-project/api
@@ -217,3 +254,4 @@ app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
 });
   
+*/
