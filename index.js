@@ -6,8 +6,22 @@ const cors = require('cors');
 
 const upload = multer({ dest: 'uploads/' });
 const app = express();
-
 app.use(cors());
+
+app.delete('/uploads/:id', (req, res) => {
+  const filePath = path.join(__dirname, 'uploads', req.params.id);
+
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to delete file' });
+    }
+
+    res.json({ message: 'File deleted' });
+  });
+});
+
+
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
